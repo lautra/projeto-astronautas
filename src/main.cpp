@@ -28,27 +28,27 @@ public:
         disponivel = true;
     }
 
-    string getCpf()
+    string getCpf() const
     {
         return cpf;
     }
 
-    string getNome()
+    string getNome() const
     {
         return nome;
     }
 
-    int getIdade()
+    int getIdade() const
     {
         return idade;
     }
 
-    bool estaVivo()
+    bool estaVivo() const
     {
         return vivo;
     }
 
-    bool estaDisponivel()
+    bool estaDisponivel() const
     {
         return disponivel;
     }
@@ -79,7 +79,7 @@ public:
     {
         voosParticipados.push_back(codigo);
     }
-    vector<int> getVoosParticipados()
+    vector<int> getVoosParticipados() const
     {
         return voosParticipados;
     }
@@ -99,21 +99,21 @@ public:
         estado = "planejado";
     }
 
-    int getCodigo()
+    int getCodigo() const
     {
         return codigo;
     }
 
-    string getEstado()
+    string getEstado() const
     {
         return estado;
     }
 
-    int getQuantidadeAstronautas()
+    int getQuantidadeAstronautas() const
     {
         return cpfs.size();
     }
-    string getCpf(int posicao)
+    string getCpf(int posicao) const
     {
         return cpfs[posicao];
     }
