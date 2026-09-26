@@ -35,6 +35,9 @@ com a IA. Cole só os pedidos que você enviou.
 //
 
 
+OPENCODE:
+usei o OpenCode Zen e o modelo MiMo-V2.6-Flash Free
+
 
 ## Parte 1: uso de IA para entender algo
 
@@ -51,9 +54,26 @@ entendi que é porque cada arquivo é compilado separadamente, e o .h funciona c
 ## Primeiro contato: revisão sem editar
 
 - As três melhorias que a IA sugeriu, em uma linha cada:
+// 
+1) Não usar "texto mágico" para o estado do voo
+2) Adicionar const aos getters de Astronauta e Voo
+3) Juntar as validações repetidas num método auxiliar
+
 - A que escolhi e por quê:
+
+Escolhi a opção 2, pois o compilador vira um ajudante, ele impede na hora de compilar que alguém altere um dado que deveria ser só leitura. Sem o const, esse erro só apareceria em tempo de execução (ou nunca, e causaria bug)
+
 - O que mudou no código, e se os seis testes continuaram passando:
+
+Adicionou const em dez métodos, da classe Astronauta e da classe Voo; getCpf, getNOme, getIdade, estaVivo, estaDisponivel, getVooPArticipados, getCodigo, getEStado, getQuanyidadeAstronautas, getCpf.
+
+OS seis testes continuaram passando.
+
+
 - O que entendi que não sabia antes:
+
+Eu não sabia que o uso do const impede alterações e permite uso em objetos const.
+
 
 ## Missão 1: LISTAR_ASTRONAUTAS e HISTORICO
 
