@@ -77,19 +77,52 @@ Eu não sabia que o uso do const impede alterações e permite uso em objetos co
 
 ## Missão 1: LISTAR_ASTRONAUTAS e HISTORICO
 
-- Primeira mensagem (o pedido do plano):
+- Primeira mensagem (o pedido do plano): 
+//
+Pedi os comandos LISTAR_ASTRONAUTAS e HISTORICO cpf, com a saída exata do enunciado, avisando para não mudar comandos existentes e para me dizer o plano antes de editar.
 - O plano que a IA apresentou, resumido:
+//
+Editar só o src/main.cpp: criar um método privado vooEmCursoDe(cpf) na Agencia (para achar o voo em curso do astronauta), e dois métodos públicos novos, listarAstronautas() e historico(cpf), além de dois "else if" novos no main() para os comandos.
+
 - Mudei algo no plano antes de liberar?
+// Não
+
 - Resultado de `testar.sh missao1` e de `testar.sh parte1`:
+//
+Os 2 testes da missão 1 passaram (OK 01_listar_astronautas, OK 02_historico), e os 6 testes da parte 1 continuaram passando também.
 - Precisei refazer? O que mudou no pedido:
+//
+Não precisei, funcionou sem precisar ajustar nada.
 
 ## Missão 2: SALVAR e CARREGAR
 
-- Primeira mensagem:
+- Primeira mensagem: 
+// 
+  Pedi os comandos SALVAR e CARREGAR, explicando o que cada um deve fazer, os erros esperados, e pedindo que ela mostrasse o formato do arquivo com um exemplo e explicasse como reconstrói os objetos, antes de editar qualquer arquivo.  
+
 - O plano, resumido:
+//
+  Editar só o src/main.cpp, incluindo <fstream> e <sstream>.
+  Dois métodos novos na Agencia: salvar(arquivo) e carregar(arquivo), usando só
+  os getters que já existem. No carregar, ela lê tudo para vetores temporários
+  e só troca pelos dados reais no final (com swap), para não perder dados caso
+  o arquivo esteja corrompido no meio da leitura. Reconstrói o astronauta
+  chamando morrer() ou embarcar() conforme os campos "vivo" e "disponivel"
+  lidos, em vez de criar setters novos.
+
 - O formato do arquivo (cole cinco linhas do `dados_teste.txt`):
+//
+  ASTRONAUTAS 3
+  111 30 1 1 1 10 Ana Maria
+  222 35 0 0 1 20 Bruno Costa
+  333 28 1 1 1 30 Carla Souza
+  VOOS 3
 - Resultado de `testar.sh missao2` e de `testar.sh parte1`:
+//
+  Os 3 testes da missão 2 passaram (01_salvar, 02_carregar,03_arquivo_inexistente), e os 6 testes da parte 1 continuaram passando. A missão 1 também continuou passando (2 de 2).
 - Precisei refazer? O que mudou no pedido:
+//
+Não precisei, funcionou de primeira.
 
 ## Missão 3: RELATORIO
 

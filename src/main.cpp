@@ -1,4 +1,6 @@
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -527,6 +529,225 @@ public:
             cout << "(nenhum voo)" << endl;
         }
     }
+
+    void salvar(string arquivo)
+    {
+        ofstream saida(arquivo.c_str());
+        if (!saida.is_open())
+        {
+            cout << "ERRO: nao foi possivel salvar em " << arquivo << endl;
+            return;
+        }
+
+        saida << "ASTRONAUTAS " << astronautas.size() << endl;
+        for (int i = 0; i < astronautas.size(); i++)
+        {
+            vector<int> participados = astronautas[i].getVoosParticipados();
+            saida << astronautas[i].getCpf() << " " << astronautas[i].getIdade() << " "
+                  << (astronautas[i].estaVivo() ? 1 : 0) << " "
+                  << (astronautas[i].estaDisponivel() ? 1 : 0) << " "
+                  << participados.size();
+            for (int j = 0; j < participados.size(); j++)
+            {
+                saida << " " << participados[j];
+            }
+            saida << " " << astronautas[i].getNome() << endl;
+        }
+
+        saida << "VOOS " << voos.size() << endl;
+        for (int i = 0; i < voos.size(); i++)
+        {
+            saida << voos[i].getCodigo() << " " << voos[i].getQuantidadeAstronautas();
+            for (int j = 0; j < voos[i].getQuantidadeAstronautas(); j++)
+            {
+                saida << " " << voos[i].getCpf(j);
+            }
+            saida << " " << voos[i].getEstado() << endl;
+        }
+
+        saida.close();
+        cout << "OK: dados salvos em " << arquivo << endl;
+    }
+
+    void carregar(string arquivo)
+    {
+        ifstream entrada(arquivo.c_str());
+        if (!entrada.is_open())
+        {
+            cout << "ERRO: nao foi possivel carregar de " << arquivo << endl;
+            return;
+        }
+
+        vector<Astronauta> novosAstronautas;
+        vector<Voo> novosVoos;
+        bool erro = false;
+        string linha;
+
+        int totalA = 0;
+        if (getline(entrada, linha))
+        {
+            istringstream cabecalho(linha);
+            string marcador;
+            cabecalho >> marcador >> totalA;
+            if (marcador != "ASTRONAUTAS" || totalA < 0)
+            {
+                erro = true;
+            }
+        }
+        else
+        {
+            erro = true;
+        }
+
+        for (int i = 0; i < totalA && !erro; i++)
+        {
+            if (!getline(entrada, linha))
+            {
+                erro = true;
+                break;
+            }
+            istringstream dados(linha);
+            string cpf, nome;
+            int idade = 0, vivo = 0, disponivel = 0, qtd = 0;
+            if (!(dados >> cpf >> idade >> vivo >> disponivel >> qtd) || qtd < 0)
+            {
+                erro = true;
+                break;
+            }
+            vector<int> participados;
+            for (int j = 0; j < qtd; j++)
+            {
+                int codigo = 0;
+                if (!(dados >> codigo))
+                {
+                    erro = true;
+                    break;
+                }
+                participados.push_back(codigo);
+            }
+            if (erro)
+            {
+                break;
+            }
+            getline(dados, nome);
+            size_t inicio = nome.find_first_not_of(" \t");
+            if (inicio == string::npos)
+            {
+                nome = "";
+            }
+            else
+            {
+                nome = nome.substr(inicio);
+            }
+
+            Astronauta a(cpf, nome, idade);
+            if (vivo == 0)
+            {
+                a.morrer();
+            }
+            else if (disponivel == 0)
+            {
+                a.embarcar();
+            }
+            for (int j = 0; j < participados.size(); j++)
+            {
+                a.registrarParticipacao(participados[j]);
+            }
+            novosAstronautas.push_back(a);
+        }
+
+        int totalV = 0;
+        if (!erro && getline(entrada, linha))
+        {
+            istringstream cabecalho(linha);
+            string marcador;
+            cabecalho >> marcador >> totalV;
+            if (marcador != "VOOS" || totalV < 0)
+            {
+                erro = true;
+            }
+        }
+        else if (!erro)
+        {
+            erro = true;
+        }
+
+        for (int i = 0; i < totalV && !erro; i++)
+        {
+            if (!getline(entrada, linha))
+            {
+                erro = true;
+                break;
+            }
+            istringstream dados(linha);
+            int codigo = 0, qtd = 0;
+            if (!(dados >> codigo >> qtd) || qtd < 0)
+            {
+                erro = true;
+                break;
+            }
+            vector<string> cpfs;
+            for (int j = 0; j < qtd; j++)
+            {
+                string cpf;
+                if (!(dados >> cpf))
+                {
+                    erro = true;
+                    break;
+                }
+                cpfs.push_back(cpf);
+            }
+            if (erro)
+            {
+                break;
+            }
+            string estado;
+            getline(dados, estado);
+            size_t inicio = estado.find_first_not_of(" \t");
+            if (inicio == string::npos)
+            {
+                estado = "";
+            }
+            else
+            {
+                estado = estado.substr(inicio);
+            }
+
+            Voo v(codigo);
+            for (int j = 0; j < cpfs.size(); j++)
+            {
+                v.adicionarAstronauta(cpfs[j]);
+            }
+            if (estado == "em curso")
+            {
+                v.lancar();
+            }
+            else if (estado == "finalizado com sucesso")
+            {
+                v.finalizar();
+            }
+            else if (estado == "finalizado com explosao")
+            {
+                v.explodir();
+            }
+            else if (estado != "planejado")
+            {
+                erro = true;
+                break;
+            }
+            novosVoos.push_back(v);
+        }
+
+        if (erro)
+        {
+            cout << "ERRO: nao foi possivel carregar de " << arquivo << endl;
+            return;
+        }
+
+        astronautas.swap(novosAstronautas);
+        voos.swap(novosVoos);
+        cout << "OK: dados carregados de " << arquivo << endl;
+    }
 };
 
 int main()
@@ -603,6 +824,18 @@ int main()
             string cpf;
             cin >> cpf;
             agencia.historico(cpf);
+        }
+        else if (comando == "SALVAR")
+        {
+            string arquivo;
+            cin >> arquivo;
+            agencia.salvar(arquivo);
+        }
+        else if (comando == "CARREGAR")
+        {
+            string arquivo;
+            cin >> arquivo;
+            agencia.carregar(arquivo);
         }
         else
         {
