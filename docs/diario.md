@@ -140,16 +140,59 @@ Não precisei, funcionou de primeira.
 
 ## Missão 4: livre
 
-- O que escolhi e por quê:
+- O que escolhi e por quê: 
+//
+  Limite de tripulantes por voo, informado no cadastro, e lista de espera quando o voo enche. Porque aparentemente parece ser mais fácil para a agência.
+
 - O comando novo, a saída que eu esperava e o nome do meu arquivo de comandos
   (escritos antes de pedir):
+  //
+  CADASTRAR_VOO_LIMITADO codigo limite
+  - OK: voo <codigo> cadastrado com limite <limite>
+  - ERRO: voo <codigo> ja cadastrado
+
+  ADICIONAR_ASTRONAUTA (comportamento novo quando o voo está cheio):
+  - OK: astronauta <cpf> na lista de espera do voo <codigo>
+
+  LISTAR_ESPERA codigo
+  - LISTA DE ESPERA DO VOO <codigo>
+  - <cpf> <nome>, um por linha, na ordem de chegada
+  - (nenhum) se a lista estiver vazia
+  - ERRO: voo <codigo> nao cadastrado, se o voo não existir
+
+  REMOVER_ASTRONAUTA (bônus): se sobrar vaga e a lista de espera não estiver
+  vazia, o primeiro da fila é promovido automaticamente, imprimindo:
+  OK: astronauta <cpf> promovido da lista de espera para o voo <codigo>
+
+  Arquivo de comandos criado: testes/missao4/meu_teste.txt
+
 - Primeira mensagem:
+//
+  Descrevi as 4 mudanças (CADASTRAR_VOO_LIMITADO, checagem de limite no ADICIONAR_ASTRONAUTA, LISTAR_ESPERA, e promoção automática no REMOVER_ASTRONAUTA), com as mensagens exatas esperadas, avisando para não
+  mudar nada que já existe e testar com o meu arquivo testes/missao4/meu_teste.txt.
 - O que veio, comparado com o que eu esperava:
+//
+  Veio exatamente como eu esperava. A IA usou um construtor com valor padrão (limite = -1) para o CADASTRAR_VOO original continuar funcionando sem limite. Antes de editar, ela me fez duas perguntas de borda que eu não tinha pensado: o que fazer se o astronauta já está na espera e pede de novo (ela recomendou não duplicar), e o que fazer se o promovido da espera estiver morto (ela recomendou
+  promover assim mesmo). Aceitei as duas recomendações.
 - `testar.sh parte1` continuou passando?
+//
+  Sim, 6 de 6, além dos testes das missões 1, 2 e 3 (que também continuaram passando).
 - Aceitei, ajustei ou descartei? Por quê:
+//
+  Aceitei o plano e as recomendações como vieram, porque fizeram sentido e não comprometiam nada do que já existia.
+
 
 ## Fechamento
 
 - O que a IA fez que eu não conseguiria fazer sozinho nesse prazo:
+//
+  Implementar as 4 mudanças da Missão 4 rapidamente, incluindo pensar nos casos de borda (duplicidade na espera, promoção de morto) que eu não tinha considerado.
+
 - Onde ela errou ou fez algo que eu não pedi:
+//
+  Não notei erros nas missões - todas as saídas bateram exatamente com o esperado de primeira.
+
 - O que eu faria diferente da próxima vez:
+//
+  Talvez pedir para a IA explicar melhor certas decisões antes de liberar, ou
+  testar mais cenários no meu próprio arquivo antes de pedir a implementação.

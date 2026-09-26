@@ -96,19 +96,37 @@ class Voo
 {
 private:
     int codigo;
+    int limite;
     string estado;
     vector<string> cpfs;
+    vector<string> espera;
 
 public:
-    Voo(int codigo)
+    Voo(int codigo, int limite = -1)
     {
         this->codigo = codigo;
+        this->limite = limite;
         estado = "planejado";
     }
 
     int getCodigo() const
     {
         return codigo;
+    }
+
+    int getLimite() const
+    {
+        return limite;
+    }
+
+    bool temLimite() const
+    {
+        return limite >= 0;
+    }
+
+    bool estaCheio() const
+    {
+        return limite >= 0 && (int)cpfs.size() >= limite;
     }
 
     string getEstado() const
@@ -153,6 +171,45 @@ public:
             }
         }
         return false;
+    }
+
+    bool estaNaEspera(string cpf) const
+    {
+        for (int i = 0; i < espera.size(); i++)
+        {
+            if (espera[i] == cpf)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void entrarNaEspera(string cpf)
+    {
+        espera.push_back(cpf);
+    }
+
+    int getQuantidadeEspera() const
+    {
+        return espera.size();
+    }
+
+    string getCpfEspera(int posicao) const
+    {
+        return espera[posicao];
+    }
+
+    string promoverDaEspera()
+    {
+        if (espera.size() == 0)
+        {
+            return "";
+        }
+        string cpf = espera[0];
+        espera.erase(espera.begin());
+        cpfs.push_back(cpf);
+        return cpf;
     }
 
     void lancar()
@@ -239,6 +296,19 @@ public:
         cout << "OK: voo " << codigo << " cadastrado" << endl;
     }
 
+    void cadastrarVooLimitado(int codigo, int limite)
+    {
+        if (buscarVoo(codigo) != -1)
+        {
+            cout << "ERRO: voo " << codigo << " ja cadastrado" << endl;
+            return;
+        }
+
+        Voo novo(codigo, limite);
+        voos.push_back(novo);
+        cout << "OK: voo " << codigo << " cadastrado com limite " << limite << endl;
+    }
+
     void adicionarAstronauta(string cpf, int codigo)
     {
         int posA = buscarAstronauta(cpf);
@@ -266,6 +336,15 @@ public:
         if (voos[posV].temAstronauta(cpf))
         {
             cout << "ERRO: astronauta " << cpf << " ja esta no voo " << codigo << endl;
+            return;
+        }
+        if (voos[posV].estaCheio())
+        {
+            if (!voos[posV].estaNaEspera(cpf))
+            {
+                voos[posV].entrarNaEspera(cpf);
+            }
+            cout << "OK: astronauta " << cpf << " na lista de espera do voo " << codigo << endl;
             return;
         }
         voos[posV].adicionarAstronauta(cpf);
@@ -298,6 +377,37 @@ public:
         }
         voos[posV].removerAstronauta(cpf);
         cout << "OK: astronauta " << cpf << " removido do voo " << codigo << endl;
+        if (!voos[posV].estaCheio())
+        {
+            string promovido = voos[posV].promoverDaEspera();
+            if (promovido != "")
+            {
+                cout << "OK: astronauta " << promovido
+                     << " promovido da lista de espera para o voo " << codigo << endl;
+            }
+        }
+    }
+
+    void listarEspera(int codigo)
+    {
+        int posV = buscarVoo(codigo);
+        if (posV == -1)
+        {
+            cout << "ERRO: voo " << codigo << " nao cadastrado" << endl;
+            return;
+        }
+        cout << "LISTA DE ESPERA DO VOO " << codigo << endl;
+        if (voos[posV].getQuantidadeEspera() == 0)
+        {
+            cout << "(nenhum)" << endl;
+            return;
+        }
+        for (int i = 0; i < voos[posV].getQuantidadeEspera(); i++)
+        {
+            string cpf = voos[posV].getCpfEspera(i);
+            int posA = buscarAstronauta(cpf);
+            cout << cpf << " " << astronautas[posA].getNome() << endl;
+        }
     }
 
     void lancarVoo(int codigo)
@@ -858,6 +968,12 @@ int main()
             cin >> codigo;
             agencia.cadastrarVoo(codigo);
         }
+        else if (comando == "CADASTRAR_VOO_LIMITADO")
+        {
+            int codigo, limite;
+            cin >> codigo >> limite;
+            agencia.cadastrarVooLimitado(codigo, limite);
+        }
         else if (comando == "ADICIONAR_ASTRONAUTA")
         {
             string cpf;
@@ -893,6 +1009,12 @@ int main()
         else if (comando == "LISTAR_VOOS")
         {
             agencia.listarVoos();
+        }
+        else if (comando == "LISTAR_ESPERA")
+        {
+            int codigo;
+            cin >> codigo;
+            agencia.listarEspera(codigo);
         }
         else if (comando == "LISTAR_MORTOS")
         {
