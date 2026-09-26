@@ -33,8 +33,6 @@ com a IA. Cole só os pedidos que você enviou.
 
 - Uma dúvida que eu tinha antes de começar:
 //
-
-
 OPENCODE:
 usei o OpenCode Zen e o modelo MiMo-V2.6-Flash Free
 
@@ -60,18 +58,18 @@ entendi que é porque cada arquivo é compilado separadamente, e o .h funciona c
 3) Juntar as validações repetidas num método auxiliar
 
 - A que escolhi e por quê:
-
+//
 Escolhi a opção 2, pois o compilador vira um ajudante, ele impede na hora de compilar que alguém altere um dado que deveria ser só leitura. Sem o const, esse erro só apareceria em tempo de execução (ou nunca, e causaria bug)
 
 - O que mudou no código, e se os seis testes continuaram passando:
-
+//
 Adicionou const em dez métodos, da classe Astronauta e da classe Voo; getCpf, getNOme, getIdade, estaVivo, estaDisponivel, getVooPArticipados, getCodigo, getEStado, getQuanyidadeAstronautas, getCpf.
 
 OS seis testes continuaram passando.
 
 
 - O que entendi que não sabia antes:
-
+//
 Eu não sabia que o uso do const impede alterações e permite uso em objetos const.
 
 
@@ -127,9 +125,18 @@ Não precisei, funcionou de primeira.
 ## Missão 3: RELATORIO
 
 - Primeira mensagem:
+//
+  Pedi o comando RELATORIO com a saída exata do enunciado, as regras de experiência e taxa de sucesso, e avisei que o SALVAR/CARREGAR já existentes precisavam continuar dando o mesmo resultado antes e depois.
 - O plano, resumido:
+//
+  Criar Astronauta::getExperiencia() (devolve o tamanho do vector voosParticipados que já existia) e Agencia::relatorio() (conta os voos por estado, conta vivos/mortos, acha o mais experiente com empate ficando com o primeiro cadastrado, e calcula a taxa de sucesso com divisão inteira). Confirmou que SALVAR/CARREGAR não precisavam mudar, porque já gravavam e liam o voosParticipados.
+
 - Resultado de `testar.sh missao3` e de `testar.sh parte1`:
+//
+  Os 5 testes da missão 3 passaram, e os 6 da parte 1 continuaram passando.
 - Precisei refazer? O que mudou no pedido:
+//
+Não precisei, funcionou de primeira.
 
 ## Missão 4: livre
 
